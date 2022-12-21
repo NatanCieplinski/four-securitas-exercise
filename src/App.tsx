@@ -6,14 +6,12 @@ import { CharacterCard } from './components/CharacterCard'
 
 function App() {
   const { data: characters, isLoading } = useCharactersQuery()
-  const localeFavorites =
-    JSON.parse(
-      (localStorage.getItem('favoriteCharactersIds') ?? []) as string
-    ) ?? []
+  const localeFavorites = localStorage.getItem('favoriteCharactersIds')
 
   const [searchFilter, setSearchFilter] = useState('')
-  const [favoriteCharactersIds, setFavoriteCharactersIds] =
-    useState<number[]>(localeFavorites)
+  const [favoriteCharactersIds, setFavoriteCharactersIds] = useState<number[]>(
+    localeFavorites ? JSON.parse(localeFavorites) : []
+  )
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false)
 
   useEffect(() => {
