@@ -3,7 +3,7 @@
     Ricky and Morty
   </h1>
   <p align="center">
-    <a href="https://app.netlify.com/sites/luxury-cajeta-2b2e39/deploys">
+    <a href="https://luxury-cajeta-2b2e39.netlify.app/">
       <img alt="Deploy status" src="https://api.netlify.com/api/v1/badges/c2b10e24-af2d-41d2-a530-33af06e7ece7/deploy-status" />
     </a>
   </p>
