@@ -14,6 +14,7 @@ function App() {
   const [searchFilter, setSearchFilter] = useState('')
   const [favoriteCharactersIds, setFavoriteCharactersIds] =
     useState<number[]>(localeFavorites)
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false)
 
   useEffect(() => {
     localStorage.setItem(
@@ -26,22 +27,22 @@ function App() {
     characters?.results?.filter((character) =>
       character.name.toLowerCase().includes(searchFilter)
     ) ?? []
-  const filteredCharactersIds = filteredCharacters.map(
-    (character) => character.id
+  const filteredCharactersIds = new Set(
+    filteredCharacters.map((character) => character.id)
   )
-
-  const set = new Set(filteredCharactersIds)
 
   const filteredAndFavoritesCharactersIds = favoriteCharactersIds.filter(
-    (item) => set.has(item)
+    (item) => filteredCharactersIds.has(item)
   )
 
-  const sortedCharactersIds = [
-    ...new Set([
-      ...filteredAndFavoritesCharactersIds,
-      ...filteredCharactersIds,
-    ]),
-  ]
+  const sortedCharactersIds = showOnlyFavorites
+    ? [...filteredAndFavoritesCharactersIds]
+    : [
+        ...new Set([
+          ...filteredAndFavoritesCharactersIds,
+          ...filteredCharactersIds,
+        ]),
+      ]
 
   const sortedAndFilteredCharacters = sortedCharactersIds.map(
     (characterId) =>
@@ -55,9 +56,17 @@ function App() {
   }
 
   return (
-    <div className="overflow-scroll justify-center items-center p-20 space-y-20 h-screen bg-gray-800">
-      <SearchBar onChange={(searchQuery) => setSearchFilter(searchQuery)} />
-      <div className="flex flex-wrap gap-10">
+    <div className="overflow-scroll justify-center items-center p-20 space-y-20 h-screen bg-slate-100">
+      <div className="flex flex-col gap-3 md:flex-row">
+        <SearchBar onChange={(searchQuery) => setSearchFilter(searchQuery)} />
+        <button
+          className="py-2 px-4 w-64 text-white uppercase bg-slate-800 rounded-lg"
+          onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+        >
+          {showOnlyFavorites ? 'Show All' : 'Show Only Favorites'}
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-10 justify-center items-center">
         {sortedAndFilteredCharacters.map((character) => (
           <CharacterCard
             key={character.id}
@@ -80,10 +89,10 @@ function App() {
 
 function SearchBar({ onChange }: { onChange: (value: string) => void }) {
   return (
-    <div className="flex gap-2 p-2 text-black bg-white rounded-lg">
+    <div className="flex grow gap-2 items-center py-2 px-4 text-black bg-white rounded-lg border border-slate-800">
       <Search />
       <input
-        className="w-full h-full rounded-lg outline-none"
+        className="w-full h-full text-2xl rounded-lg outline-none"
         onChange={(e) => onChange(e.target.value)}
       />
     </div>
